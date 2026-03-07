@@ -6,6 +6,21 @@ A production-grade multi-AI aggregation system that fires Claude, ChatGPT, Mistr
 
 ---
 
+## Changelog
+
+### v3.1.1 — Synthesis Engine Fix
+**Problem:** The OPEN-LEE Synthesis Engine was showing "Synthesis engine offline" after all nodes completed.
+
+**Root Causes Fixed:**
+1. **Server timeout too short** — The proxy server had a 10-second timeout on Anthropic API calls. Synthesis prompts are long (they include all 6 model responses), so they regularly exceeded this limit and returned a 504 timeout error. Fixed by increasing to 60 seconds.
+2. **max_tokens too low** — Synthesis responses were capped at 1000 tokens, not enough for a full cross-model analysis. Increased to 2000 tokens for synthesis calls.
+3. **Wrong API auth header** — Server was sending `Authorization: Bearer` instead of the correct Anthropic header `x-api-key`. Added `anthropic-version` header as required by the API.
+4. **dotenv path wrong on Windows** — `dotenv.config()` was looking for `.env` in the working directory (project root) instead of the `server/` folder. Fixed using `fileURLToPath(import.meta.url)` to resolve the correct path.
+5. **Frontend calling Anthropic directly** — The React component was trying to call `https://api.anthropic.com` directly from the browser, which fails due to CORS and missing API key. Redirected all Claude calls through the local proxy at `http://localhost:3001/api/claude`.
+6. **Missing React entry point** — `index.html` and `web/src/main.jsx` were missing, preventing Vite from building the frontend. Created both files.
+
+---
+
 ## 🚀 Quick Start
 
 ### Windows Setup (First Time)

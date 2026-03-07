@@ -42,22 +42,16 @@ const DEMO_RESPONSES = {
  * @param {AbortSignal} signal
  * @returns {Promise<string>}
  */
-async function callClaude(prompt, timeoutMs = 90000, signal) {
+async function callClaude(prompt, timeoutMs = 90000, signal, options = {}) {
   const controller = new AbortController();
   const mergedSignal = signal;
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("http://localhost:3001/api/claude", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: "You are one node in OPEN-LEE, a multi-AI aggregation system. Give a thorough, focused answer. Do not mention that you are Claude or reference Anthropic. Your label is simply 'CLAUDE NODE'. Be direct and substantive.",
-        messages: [{ role: "user", content: prompt }],
-      }),
-      // If the platform supplies a signal we respect it; otherwise use controller
+      body: JSON.stringify({ prompt, ...options }),
       signal: mergedSignal || controller.signal,
     });
 
@@ -188,7 +182,7 @@ export default function OpenLeeArtifact() {
 
     try {
       const synthPrompt = `You are OPEN-LEE's synthesis engine. Multiple AI models answered this query: "${q}"\n\nHere are their responses:\n\n${Object.entries(collected).map(([k,v]) => `[${k.toUpperCase()}]: ${v}`).join("\n\n")}\n\nYour job: Identify what each model got RIGHT that others missed. Combine all unique insights into one DEFINITIVE unified answer. Format it clearly. Start with \"OPEN-LEE SYNTHESIS:\" and be comprehensive.`;
-      const synth = await callClaude(synthPrompt, 90000, controller.signal);
+      const synth = await callClaude(synthPrompt, 90000, controller.signal, { max_tokens: 2000 });
       if (!controller.signal.aborted) setSynthesis(synth);
     } catch (err) {
       if (!controller.signal.aborted) setSynthesis("Synthesis engine offline. Showing raw responses above.");
