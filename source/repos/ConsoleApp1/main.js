@@ -99,4 +99,40 @@ app.on('activate', () => {
 ipcMain.handle('get-app-version', () => app.getVersion());
 ipcMain.on('app-close', () => app.quit());
 
+// Windows Speech Recognition via PowerShell
+let speechProcess = null;
+const SPEECH_PS = `
+Add-Type -AssemblyName System.Speech
+$rec = New-Object System.Speech.Recognition.SpeechRecognitionEngine
+$rec.LoadGrammar((New-Object System.Speech.Recognition.DictationGrammar))
+$rec.SetInputToDefaultAudioDevice()
+$rec.EndSilenceTimeout = [TimeSpan]::FromSeconds(2)
+$result = $rec.Recognize([TimeSpan]::FromSeconds(30))
+if ($result) { Write-Output $result.Text } else { Write-Output "" }
+$rec.Dispose()
+`;
+
+ipcMain.handle('speech-start', (event) => {
+  if (speechProcess) { try { speechProcess.kill(); } catch {} }
+  return new Promise((resolve) => {
+    speechProcess = spawn('powershell', ['-NoProfile', '-Command', SPEECH_PS], { stdio: ['ignore', 'pipe', 'pipe'] });
+    let output = '';
+    speechProcess.stdout.on('data', (d) => { output += d.toString(); });
+    speechProcess.stderr.on('data', (d) => {
+      const err = d.toString().trim();
+      if (err && mainWindow) mainWindow.webContents.send('speech-error', err);
+    });
+    speechProcess.on('close', () => {
+      const text = output.trim();
+      if (mainWindow) mainWindow.webContents.send('speech-result', text);
+      speechProcess = null;
+      resolve(text);
+    });
+  });
+});
+
+ipcMain.on('speech-stop', () => {
+  if (speechProcess) { try { speechProcess.kill(); } catch {} speechProcess = null; }
+});
+
 console.log('[MAIN] Electron main process ready');
