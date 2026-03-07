@@ -121,23 +121,38 @@ export default function OpenLeeArtifact() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) { setErrorBanner("Speech recognition not supported in this browser."); return; }
     const rec = new SpeechRecognition();
-    rec.continuous = false;
-    rec.interimResults = false;
+    rec.continuous = true;
+    rec.interimResults = true;
     rec.lang = "en-US";
     rec.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      setPrompt(prev => prev ? prev + " " + transcript : transcript);
-      setListening(false);
+      let final = "";
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript + " ";
+      }
+      if (final.trim()) setPrompt(prev => (prev ? prev + " " : "") + final.trim());
     };
-    rec.onerror = () => setListening(false);
-    rec.onend = () => setListening(false);
+    rec.onerror = (e) => {
+      if (e.error !== "no-speech") setErrorBanner(`Mic error: ${e.error}`);
+    };
+    rec.onend = () => {
+      // Auto-restart while still in listening mode
+      if (recognitionRef.current && recognitionRef.current._active) {
+        try { rec.start(); } catch {}
+      } else {
+        setListening(false);
+      }
+    };
+    rec._active = true;
     recognitionRef.current = rec;
     rec.start();
     setListening(true);
   }, []);
 
   const stopListening = useCallback(() => {
-    recognitionRef.current?.stop();
+    if (recognitionRef.current) {
+      recognitionRef.current._active = false;
+      recognitionRef.current.stop();
+    }
     setListening(false);
   }, []);
 

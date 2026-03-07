@@ -66,6 +66,12 @@ function startServer() {
 
 app.on('ready', () => {
   console.log('[MAIN] App is ready');
+  // Auto-grant microphone permission for speech-to-text
+  const { session } = require('electron');
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'media') return callback(true);
+    callback(false);
+  });
   createWindow();
   startServer();
 });
