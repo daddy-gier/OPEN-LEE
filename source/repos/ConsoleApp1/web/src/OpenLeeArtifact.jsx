@@ -111,9 +111,35 @@ export default function OpenLeeArtifact() {
   const [totalRuns, setTotalRuns] = useState(0);
   const [queryLog, setQueryLog] = useState([]);
   const [errorBanner, setErrorBanner] = useState(null);
+  const [listening, setListening] = useState(false);
 
   const abortRef = useRef(null);
   const synthRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  const startListening = useCallback(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { setErrorBanner("Speech recognition not supported in this browser."); return; }
+    const rec = new SpeechRecognition();
+    rec.continuous = false;
+    rec.interimResults = false;
+    rec.lang = "en-US";
+    rec.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      setPrompt(prev => prev ? prev + " " + transcript : transcript);
+      setListening(false);
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    rec.start();
+    setListening(true);
+  }, []);
+
+  const stopListening = useCallback(() => {
+    recognitionRef.current?.stop();
+    setListening(false);
+  }, []);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -227,6 +253,7 @@ export default function OpenLeeArtifact() {
             <textarea value={prompt} onChange={e => setPrompt(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) runQuery(); }} placeholder="Enter your query..." style={{ flex: 1, padding: 12, background: "transparent", color: "#e0e0e0", border: "none", height: 100 }} />
             <div style={{ padding: 12, borderLeft: "1px solid #1a1a2e", display: "flex", flexDirection: "column", gap: 8 }}>
               <button onClick={runQuery} disabled={running || !prompt.trim()} style={{ background: running ? "#333" : "#FF6B35", color: running ? "#777" : "#050508", border: "none", padding: "8px 12px", borderRadius: 4, cursor: running ? "not-allowed" : "pointer" }}>{running ? "PROCESSING..." : "▶ EXECUTE"}</button>
+              <button onClick={listening ? stopListening : startListening} disabled={running} title={listening ? "Stop listening" : "Speak your prompt"} style={{ background: listening ? "#1a0a2e" : "#0a0a14", color: listening ? "#a855f7" : "#777", border: `1px solid ${listening ? "#a855f7" : "#1a1a2e"}`, padding: "6px 8px", borderRadius: 4, cursor: running ? "not-allowed" : "pointer", boxShadow: listening ? "0 0 8px #a855f744" : "none" }}>{listening ? "🎙 LISTENING..." : "🎤 MIC"}</button>
               {running && <button onClick={() => abortRef.current?.abort()} style={{ background: "#222", color: "#EF4444", border: "1px solid #EF4444", padding: "6px 8px", borderRadius: 4 }}>✕ CANCEL</button>}
             </div>
           </div>
