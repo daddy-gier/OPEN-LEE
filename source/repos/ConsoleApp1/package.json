@@ -7,114 +7,31 @@
   "author": "daddy-gier",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev":     "vite",
+    "build":   "vite build",
     "preview": "vite preview",
-    "server": "cd server && npm start",
-    "client": "npm run dev",
-    "start": "electron-forge start",
+    "server":  "cd server && node index.js",
+    "start":   "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make":    "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "setup": "npm install && cd server && npm install && cd .."
+    "lint":    "eslint web/src --ext .js,.jsx,.ts,.tsx",
+    "setup":   "npm install && cd server && npm install"
   },
   "dependencies": {
-    "react": "^18.2.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "react":     "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.0.0",
-    "@electron-forge/maker-deb": "^7.0.0",
-    "@electron-forge/maker-squirrel": "^7.0.0",
-    "@electron-forge/maker-zip": "^7.0.0",
-    "@electron-forge/plugin-webpack": "^7.0.0",
-    "@vitejs/plugin-react": "^4.0.0",
-    "electron": "latest",
-    "electron-is-dev": "^2.0.0",
-    "electron-squirrel-startup": "^1.0.1",
-    "eslint": "^10.0.3",
-    "vite": "^4.3.9"
-  },
-  "forge": {
-    "name": "open-lee",
-    "version": "3.1.0",
-    "description": "Multi-AI Consensus Engine — Fire Claude, ChatGPT, Mistral, Grok, and Local Models simultaneously",
-    "author": "daddy-gier",
-    "license": "MIT",
-    "main": "./main.js",
-    "files": [
-      {
-        "from": "preload.js",
-        "to": "preload.js"
-      },
-      {
-        "from": "icon.png",
-        "to": "icon.png"
-      },
-      {
-        "from": "locales",
-        "to": "locales"
-      },
-      {
-        "from": "node_modules",
-        "to": "node_modules"
-      },
-      {
-        "from": "package.json",
-        "to": "package.json"
-      },
-      {
-        "from": "renderer",
-        "to": "renderer"
-      },
-      {
-        "from": "main.js",
-        "to": "main.js"
-      },
-      {
-        "from": "vite.config.js",
-        "to": "vite.config.js"
-      }
-    ],
-    "extraResources": [
-      {
-        "from": "C:\\Users\\Gierl\\source\\repos\\ConsoleApp1\\out\\make\\squirrel.windows\\x64\\OPEN-LEE-3.1.0 Setup.exe",
-        "to": "."
-      }
-    ],
-    "asar": true,
-    "electronPackagerConfig": {
-      "icon": "icon",
-      "executableName": "open-lee",
-      "packageVersion": "3.1.0",
-      "asar": {
-        "unpackDir": ".webpack"
-      }
-    },
-    "electronWixConfig": {
-      "appId": "com.example.openlee",
-      "upgradeCode": "PUT-GUID-HERE",
-      "version": "3.1.0",
-      "manufacturer": "Your Company",
-      "description": "Multi-AI Consensus Engine — Fire Claude, ChatGPT, Mistral, Grok, and Local Models simultaneously",
-      "exe": "open-lee.exe",
-      "msi": true,
-      "compress": true,
-      "language": "1033",
-      "permissions": [
-        "all"
-      ],
-      "icons": {
-        "16x16": "icon.ico",
-        "32x32": "icon.ico",
-        "48x48": "icon.ico",
-        "256x256": "icon.ico"
-      }
-    },
-    "publish": {
-      "provider": "generic",
-      "url": "https://your-url.com/downloads/"
-    }
+    "@electron-forge/cli":           "^7.0.0",
+    "@electron-forge/maker-deb":     "^7.0.0",
+    "@electron-forge/maker-squirrel":"^7.0.0",
+    "@electron-forge/maker-zip":     "^7.0.0",
+    "@vitejs/plugin-react":          "^4.0.0",
+    "electron":                      "^33.0.0",
+    "electron-is-dev":               "^2.0.0",
+    "eslint":                        "^8.57.0",
+    "vite":                          "^5.0.0"
   }
 }

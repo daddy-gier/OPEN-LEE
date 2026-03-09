@@ -53,8 +53,10 @@ function createWindow() {
 
 function startServer() {
   console.log('[MAIN] Starting Express server...');
+  const serverEnv = { ...process.env, PORT: process.env.PORT || '3001' };
   serverProcess = spawn('node', [path.join(__dirname, 'server/index.js')], {
     stdio: 'inherit',
+    env: serverEnv,
   });
 
   serverProcess.on('error', (err) => {

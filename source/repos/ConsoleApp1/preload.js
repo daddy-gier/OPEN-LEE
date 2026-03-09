@@ -7,8 +7,15 @@ contextBridge.exposeInMainWorld('electron', {
   onModelResponse: (callback) => ipcRenderer.on('model-response', callback),
   startSpeech: () => ipcRenderer.invoke('speech-start'),
   stopSpeech: () => ipcRenderer.send('speech-stop'),
-  onSpeechResult: (callback) => ipcRenderer.on('speech-result', (_, text) => callback(text)),
-  onSpeechError: (callback) => ipcRenderer.on('speech-error', (_, err) => callback(err)),
+  // Remove stale listeners before adding new ones to prevent duplicate callbacks
+  onSpeechResult: (callback) => {
+    ipcRenderer.removeAllListeners('speech-result');
+    ipcRenderer.once('speech-result', (_, text) => callback(text));
+  },
+  onSpeechError: (callback) => {
+    ipcRenderer.removeAllListeners('speech-error');
+    ipcRenderer.once('speech-error', (_, err) => callback(err));
+  },
 });
 
 console.log('[PRELOAD] Context bridge initialized');

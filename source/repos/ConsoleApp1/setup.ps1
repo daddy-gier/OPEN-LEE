@@ -51,13 +51,11 @@ cd ..
 
 Write-Host ""
 Write-Host "────────────────────────────────────────────────────────────" -ForegroundColor Cyan
-Write-Host "Setting up web dependencies..." -ForegroundColor Cyan
+Write-Host "Setting up root (web + Electron) dependencies..." -ForegroundColor Cyan
 Write-Host "────────────────────────────────────────────────────────────" -ForegroundColor Cyan
-cd web
 Write-Host "Installing npm packages in: $(pwd)" -ForegroundColor Yellow
 npm install
-Write-Host "✓ Web dependencies installed!" -ForegroundColor Green
-cd ..
+Write-Host "✓ Root dependencies installed!" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "────────────────────────────────────────────────────────────" -ForegroundColor Cyan
@@ -114,7 +112,7 @@ Write-Host "3. Start the proxy server (Terminal 1):" -ForegroundColor Yellow
 Write-Host "   cd server && npm start" -ForegroundColor White
 Write-Host ""
 Write-Host "4. Start the React app (Terminal 2):" -ForegroundColor Yellow
-Write-Host "   cd web && npm start" -ForegroundColor White
+Write-Host "   npm run dev" -ForegroundColor White
 Write-Host ""
 Write-Host "5. Open your browser:" -ForegroundColor Yellow
 Write-Host "   http://localhost:5173" -ForegroundColor White
