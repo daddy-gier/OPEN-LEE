@@ -7,31 +7,33 @@
   "author": "daddy-gier",
   "license": "MIT",
   "scripts": {
-    "dev":     "vite",
-    "build":   "vite build",
+    "dev": "vite",
+    "build": "vite build",
     "preview": "vite preview",
-    "server":  "cd server && node index.js",
-    "start":   "electron-forge start",
+    "server": "cd server && node index.js",
+    "start": "electron-forge start",
     "package": "electron-forge package",
-    "make":    "electron-forge make",
+    "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint":    "eslint web/src --ext .js,.jsx,.ts,.tsx",
-    "setup":   "npm install && cd server && npm install"
+    "lint": "eslint web/src --ext .js,.jsx,.ts,.tsx",
+    "setup": "npm install && cd server && npm install"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
-    "react":     "^18.2.0",
+    "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@electron-forge/cli":           "^7.0.0",
-    "@electron-forge/maker-deb":     "^7.0.0",
-    "@electron-forge/maker-squirrel":"^7.0.0",
-    "@electron-forge/maker-zip":     "^7.0.0",
-    "@vitejs/plugin-react":          "^4.0.0",
-    "electron":                      "^33.0.0",
-    "electron-is-dev":               "^2.0.0",
-    "eslint":                        "^8.57.0",
-    "vite":                          "^5.0.0"
+    "@electron-forge/cli": "^7.0.0",
+    "@electron-forge/maker-deb": "^7.0.0",
+    "@electron-forge/maker-squirrel": "^7.0.0",
+    "@electron-forge/maker-zip": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "@vitejs/plugin-react": "^4.0.0",
+    "electron": "^33.0.0",
+    "electron-is-dev": "^2.0.0",
+    "eslint": "^8.57.0",
+    "vite": "^5.0.0"
   }
 }

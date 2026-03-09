@@ -75,7 +75,7 @@ function GpuBar({ load, color }: { load: number; color: string }) {
 
 const MemoGpuBar = React.memo(GpuBar);
 
-export default function OpenLee(): JSX.Element {
+export default function OpenLee(): React.JSX.Element {
   const [prompt, setPrompt] = useState("");
   const [running, setRunning] = useState(false);
   const [states, setStates] = useState<Record<string, "idle" | "loading" | "done" | "error">>({});
