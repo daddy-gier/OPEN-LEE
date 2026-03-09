@@ -110,9 +110,9 @@ export default function OpenLee(): React.JSX.Element {
     setStates({});
     setQueryLog(prev => [{ q, ts: new Date().toLocaleTimeString() }, ...prev.slice(0, 9)]);
 
-    const initStates: Record<string, string> = {};
+    const initStates: Record<string, "idle" | "loading" | "done" | "error"> = {};
     MODELS.forEach(m => { initStates[m.id] = "loading"; });
-    setStates(initStates as any);
+    setStates(initStates);
 
     const collected: Record<string, string> = {};
 
@@ -130,7 +130,7 @@ export default function OpenLee(): React.JSX.Element {
 
     const demoPromises = ["chatgpt", "mistral", "grok", "ludus", "openclaw"].map((id, i) =>
       new Promise<void>(resolve => setTimeout(() => {
-        const text = DEMO_RESPONSES[id] + `\n\n[Responding to: "${q.slice(0,60)}..."]`;
+        const text = DEMO_RESPONSES[id] + `\n\n[Responding to: "${q.slice(0,60)}${q.length > 60 ? "..." : ""}"]`;
         collected[id] = text;
         setModelState(id, "done");
         setModelResponse(id, text);
@@ -158,7 +158,7 @@ export default function OpenLee(): React.JSX.Element {
     setTimeout(() => synthRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, [prompt, running, setModelResponse, setModelState]);
 
-  const doneCt = useMemo(() => Object.values(states).filter(s => s === "done").length, [states]);
+  const doneCt = useMemo(() => Object.values(states).filter(s => s === "done" || s === "error").length, [states]);
   const progress = MODELS.length > 0 ? (doneCt / MODELS.length) * 100 : 0;
 
   return (
@@ -195,7 +195,7 @@ export default function OpenLee(): React.JSX.Element {
               OPEN-LEE
             </div>
             <div style={{ fontSize: 9, color: "#555", letterSpacing: 2 }}>
-              MULTI-NEURAL AGGREGATION SYSTEM v1.0
+              MULTI-NEURAL AGGREGATION SYSTEM v3.1
             </div>
           </div>
         </div>

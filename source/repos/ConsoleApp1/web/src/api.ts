@@ -1,4 +1,4 @@
-export async function callClaude(prompt: string, timeoutMs = 10000): Promise<string> {
+export async function callClaude(prompt: string, timeoutMs = 90000): Promise<string> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
