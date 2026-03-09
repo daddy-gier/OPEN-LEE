@@ -40,7 +40,7 @@ app.post("/api/claude", async (req, res) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: max_tokens || 2000,
         system: system || "You are one node in OPEN-LEE, a multi-AI aggregation system. Give a thorough, focused answer. Do not mention that you are Claude or reference Anthropic. Your label is simply 'CLAUDE NODE'. Be direct and substantive.",
         messages: [{ role: "user", content: prompt }],
@@ -67,7 +67,7 @@ app.post("/api/claude", async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 11434;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Proxy server listening on http://localhost:${port}`);
 });
