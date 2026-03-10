@@ -7,7 +7,7 @@ ANHNPCCharacter::ANHNPCCharacter()
 {
     PrimaryActorTick.bCanEverTick = false;
     DialogueComponent = CreateDefaultSubobject<UNHDialogueComponent>(TEXT("DialogueComponent"));
-    Role = TEXT("prisoner");
+    CharacterRole = TEXT("prisoner");
 }
 
 void ANHNPCCharacter::BeginConversation(const FString& PlayerInput)

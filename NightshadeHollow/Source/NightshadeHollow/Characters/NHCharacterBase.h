@@ -33,7 +33,7 @@ public:
     FString CharacterName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NH|Identity")
-    FString Role; // "prisoner", "guard", "warden", "player"
+    FString CharacterRole; // "prisoner", "guard", "warden", "player"
 
     // ── Vitals ────────────────────────────────────────────────────
 

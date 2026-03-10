@@ -24,7 +24,7 @@ ANHPlayerCharacter::ANHPlayerCharacter()
     GetCharacterMovement()->bOrientRotationToMovement = true;
 
     CharacterName = TEXT("Player");
-    Role = TEXT("player");
+    CharacterRole = TEXT("player");
 }
 
 void ANHPlayerCharacter::BeginPlay()
