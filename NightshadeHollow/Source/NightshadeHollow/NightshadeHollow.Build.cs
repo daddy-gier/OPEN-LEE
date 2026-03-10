@@ -28,8 +28,7 @@ public class NightshadeHollow : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-            "Slate",
-            "SlateCore"
+            // (Slate and SlateCore are already in PublicDependencyModuleNames)
         });
     }
 }

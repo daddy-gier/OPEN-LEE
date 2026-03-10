@@ -82,7 +82,7 @@ struct FStoryEventRequest
 //  Subsystem
 // ─────────────────────────────────────────────
 
-UCLASS()
+UCLASS(Config=Game)
 class NIGHTSHADEHOLLOW_API UOpenLEESubsystem : public UGameInstanceSubsystem
 {
     GENERATED_BODY()

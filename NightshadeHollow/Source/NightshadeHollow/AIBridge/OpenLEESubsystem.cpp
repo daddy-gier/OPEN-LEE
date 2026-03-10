@@ -45,7 +45,7 @@ void UOpenLEESubsystem::RequestNPCDialogue(const FNPCDialogueRequest& Request)
     Body->SetArrayField(TEXT("conversationHistory"), HistoryArray);
 
     FString JsonBody;
-    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonBody);
+    auto Writer = TJsonWriterFactory<>::Create(&JsonBody);
     FJsonSerializer::Serialize(Body.ToSharedRef(), Writer);
 
     FString CapturedName = Request.CharacterName;
@@ -71,7 +71,7 @@ void UOpenLEESubsystem::RequestStoryEvent(const FStoryEventRequest& Request)
     Body->SetArrayField(TEXT("activeStoryFlags"), FlagsArray);
 
     FString JsonBody;
-    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonBody);
+    auto Writer = TJsonWriterFactory<>::Create(&JsonBody);
     FJsonSerializer::Serialize(Body.ToSharedRef(), Writer);
 
     SendRequest(TEXT("/api/game/story-event"), JsonBody,

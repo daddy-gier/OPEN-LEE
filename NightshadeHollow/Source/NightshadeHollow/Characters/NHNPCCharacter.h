@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Characters/NHCharacterBase.h"
-#include "NHCharacterBase.h"
 #include "NHNPCCharacter.generated.h"
 
 class UNHDialogueComponent;
