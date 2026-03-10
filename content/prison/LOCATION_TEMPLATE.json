@@ -1,0 +1,39 @@
+{
+  "_instructions": "One file per location/area. Fill in all fields. Delete this key.",
+
+  "id": "location_id_snake_case",
+  "name": "Display Name (e.g. Cell Block C)",
+  "type": "cell_block | yard | cafeteria | infirmary | solitary | warden_office | workshop | chapel | tunnel | guard_station | roof | visitor_room",
+
+  "atmosphere": "2-3 sentences describing how this place looks, smells, sounds. Used for ambient dialogue and player journal entries.",
+
+  "danger_level": "low | medium | high | extreme",
+  "guard_presence": "none | light | moderate | heavy | constant",
+
+  "access": {
+    "default": "open | locked | restricted | forbidden",
+    "unlockConditions": ["Story flags or items required to access this area"]
+  },
+
+  "connectedLocations": ["other_location_ids"],
+
+  "importantObjects": [
+    {
+      "id": "object_id",
+      "name": "Object Name",
+      "description": "What is it, what does it do?",
+      "interactable": true,
+      "requiredFlags": []
+    }
+  ],
+
+  "npcsFoundHere": ["character_ids_that_frequent_this_location"],
+
+  "events": ["event_ids_that_can_trigger_in_this_location"],
+
+  "ambientDetails": [
+    "Specific atmospheric touches: dripping water, distant shouting, flickering lights"
+  ],
+
+  "loreNotes": "Any hidden history, secrets, or world-building facts about this place"
+}

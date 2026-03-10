@@ -1,0 +1,52 @@
+{
+  "_instructions": "Copy this file, rename it to the character's name, fill in each field. Delete this _instructions key.",
+
+  "id": "unique_id_snake_case",
+  "name": "Full Display Name",
+  "role": "prisoner | guard | warden | informant | visitor | staff",
+  "age": 0,
+  "gender": "",
+  "sentence": "e.g. 15 years for armed robbery",
+  "timeServed": "e.g. 3 years",
+  "cellBlock": "A | B | C | D | Solitary",
+
+  "appearance": {
+    "build": "",
+    "distinguishingFeatures": [],
+    "usualExpression": ""
+  },
+
+  "personality": "2-4 sentences describing how this character behaves, speaks, and reacts to others. This is sent directly to OPEN-LEE as the NPC persona.",
+
+  "backstory": "3-6 sentences of history. Crime, life before prison, key events inside prison walls. Sent to OPEN-LEE for context.",
+
+  "motivations": [
+    "What does this character want most?"
+  ],
+
+  "secrets": [
+    "Things this character hides from others"
+  ],
+
+  "relationships": {
+    "player": "neutral | hostile | friendly | trusted | suspicious",
+    "otherCharacterIDs": {
+      "example_id": "ally | rival | afraid | mentor | unknown"
+    }
+  },
+
+  "dialogue_style": "formal | street | cold | nervous | aggressive | philosophical | manipulative",
+
+  "dailyRoutine": [
+    "06:00 – Wake, breakfast",
+    "08:00 – Work duty",
+    "12:00 – Lunch",
+    "14:00 – Yard time",
+    "17:00 – Dinner",
+    "20:00 – Lockdown"
+  ],
+
+  "storyRole": "What narrative purpose does this character serve? Ally? Obstacle? Red herring? Key to escape?",
+
+  "notes": "Anything else relevant to game implementation"
+}
