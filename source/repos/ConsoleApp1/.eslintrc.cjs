@@ -13,4 +13,14 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "off",
   },
+  // Electron main/preload are CommonJS — allow require() in those files
+  overrides: [
+    {
+      files: ["main.js", "preload.js", "forge.config.js"],
+      env: { node: true, browser: false },
+      rules: {
+        "@typescript-eslint/no-require-imports": "off",
+      },
+    },
+  ],
 };
