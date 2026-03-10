@@ -50,13 +50,11 @@ cd ..
 
 echo ""
 echo "───────────────────────────────────────────────────────────────"
-echo "Setting up web dependencies..."
+echo "Setting up root (web + Electron) dependencies..."
 echo "───────────────────────────────────────────────────────────────"
-cd web
 echo "Installing npm packages in: $(pwd)"
 npm install
-echo "✓ Web dependencies installed!"
-cd ..
+echo "✓ Root dependencies installed!"
 
 echo ""
 echo "───────────────────────────────────────────────────────────────"
@@ -112,7 +110,7 @@ echo "3. Start the proxy server (Terminal 1):"
 echo "   cd server && npm start"
 echo ""
 echo "4. Start the React app (Terminal 2):"
-echo "   cd web && npm start"
+echo "   npm run dev"
 echo ""
 echo "5. Open your browser:"
 echo "   http://localhost:5173"
