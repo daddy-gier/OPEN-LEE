@@ -13,12 +13,12 @@ public:
     ANHGameMode();
 
     /** Called when the player's suspicion reaches 100 */
-    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "NH|GameMode")
+    UFUNCTION(BlueprintNativeEvent, Category = "NH|GameMode")
     void OnSuspicionMaxed();
     virtual void OnSuspicionMaxed_Implementation();
 
     /** Called when the player escapes or wins a chapter */
-    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "NH|GameMode")
+    UFUNCTION(BlueprintNativeEvent, Category = "NH|GameMode")
     void OnChapterComplete(int32 Chapter);
     virtual void OnChapterComplete_Implementation(int32 Chapter);
 };

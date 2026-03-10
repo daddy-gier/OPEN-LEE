@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Math/RotationMatrix.h"
 
 ANHPlayerCharacter::ANHPlayerCharacter()
 {
@@ -60,9 +61,9 @@ void ANHPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 void ANHPlayerCharacter::Move(const FInputActionValue& Value)
 {
     FVector2D Axis = Value.Get<FVector2D>();
-    if (Controller)
+    if (AController* MyController = GetController())
     {
-        const FRotator Rotation = Controller->GetControlRotation();
+        const FRotator Rotation = MyController->GetControlRotation();
         const FRotator YawRotation(0, Rotation.Yaw, 0);
         AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X), Axis.Y);
         AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y), Axis.X);

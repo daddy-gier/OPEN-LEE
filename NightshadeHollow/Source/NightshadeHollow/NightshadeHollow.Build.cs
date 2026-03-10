@@ -26,9 +26,5 @@ public class NightshadeHollow : ModuleRules
             "NavigationSystem"
         });
 
-        PrivateDependencyModuleNames.AddRange(new string[]
-        {
-            // (Slate and SlateCore are already in PublicDependencyModuleNames)
-        });
     }
 }

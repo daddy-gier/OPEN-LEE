@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/NHCharacterBase.h"
+#include "InputActionValue.h"
 #include "NHPlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -67,6 +68,6 @@ public:
     void TryInteract();
 
 private:
-    void Move(const struct FInputActionValue& Value);
-    void Look(const struct FInputActionValue& Value);
+    void Move(const FInputActionValue& Value);
+    void Look(const FInputActionValue& Value);
 };
