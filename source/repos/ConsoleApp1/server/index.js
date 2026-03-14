@@ -27,33 +27,35 @@ async function callClaude(system, userPrompt, maxTokens = 1000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 60000);
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: "user", content: userPrompt }],
-    }),
-    signal: controller.signal,
-  });
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: maxTokens,
+        system,
+        messages: [{ role: "user", content: userPrompt }],
+      }),
+      signal: controller.signal,
+    });
 
-  clearTimeout(timeout);
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(`Upstream error: ${response.status} ${txt}`);
+    }
 
-  if (!response.ok) {
-    const txt = await response.text();
-    throw new Error(`Upstream error: ${response.status} ${txt}`);
+    const data = await response.json();
+    const text = data?.content?.[0]?.text ?? null;
+    if (!text) throw new Error("No text in upstream response");
+    return text;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const data = await response.json();
-  const text = data?.content?.[0]?.text ?? null;
-  if (!text) throw new Error("No text in upstream response");
-  return text;
 }
 
 // ─────────────────────────────────────────────────────────────────
