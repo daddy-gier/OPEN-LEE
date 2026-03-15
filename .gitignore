@@ -1,0 +1,66 @@
+# Credentials & sensitive
+.openclaw/
+.ssh/
+.claude*
+.config/
+.docker/
+
+# Windows user profile junk
+AppData/
+ntuser*
+NTUSER*
+*.log
+
+# Dev tools / caches
+node_modules/
+.ollama/
+.aider*
+.cache/
+.cagent/
+.cargo/
+.codex/
+.dotnet/
+.happy/
+.lmstudio*
+.local/
+.nuget/
+.rustup/
+.vscode/
+.windows-build-tools/
+.gitconfig
+
+# User folders (not source)
+Desktop/
+Downloads/
+Music/
+Pictures/
+Videos/
+Contacts/
+CrossDevice/
+Favorites/
+Links/
+OneDrive/
+PCAppStore/
+Searches/
+Saved Games/
+
+# Documents subfolders to exclude (allow Documents/GitHub/OPEN-LEE/)
+Documents/Unreal Projects/
+Documents/WindowsPowerShell/
+Documents/Visual Studio*/
+
+# Visual Studio IDE files
+.vs/
+*.slnx
+ConsoleApp1/
+
+# Project files (not OPEN-LEE source)
+Claude-Nyght-Project/
+NyghtshadeAI.modelfile
+*.bat
+*.ps1
+forge.config.js
+package.json
+package-lock.json
+scan_results.txt
+CLAWED_build_errors.txt
