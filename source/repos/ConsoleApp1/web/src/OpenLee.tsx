@@ -1,6 +1,78 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { callClaude } from "./api";
 
+// ── Preset templates ──────────────────────────────────────────────────────────
+const PRESET_CATEGORIES: { label: string; color: string; templates: string[] }[] = [
+  {
+    label: "BUSINESS",
+    color: "#FF6B35",
+    templates: [
+      "Analyze my business idea:",
+      "Write a cold email for:",
+      "Create a marketing plan for:",
+      "What is the target market for:",
+      "List the biggest risks for this business:",
+    ],
+  },
+  {
+    label: "CODE",
+    color: "#10B981",
+    templates: [
+      "Review this code for bugs:",
+      "Refactor this function:",
+      "Explain what this code does:",
+      "Write unit tests for:",
+      "Convert this code to TypeScript:",
+    ],
+  },
+  {
+    label: "WRITING",
+    color: "#8B5CF6",
+    templates: [
+      "Write a blog post about:",
+      "Summarize this text:",
+      "Edit for clarity:",
+      "Write a LinkedIn post about:",
+      "Draft a professional email about:",
+    ],
+  },
+  {
+    label: "CREATIVE",
+    color: "#EC4899",
+    templates: [
+      "Brainstorm 10 ideas for:",
+      "Write a short story about:",
+      "Create a product name for:",
+      "Write 5 taglines for:",
+      "Design a character for a story about:",
+    ],
+  },
+  {
+    label: "RESEARCH",
+    color: "#F59E0B",
+    templates: [
+      "Pros and cons of:",
+      "Explain [topic] simply:",
+      "Compare X vs Y:",
+      "What are the most common misconceptions about:",
+      "Give me a timeline of:",
+    ],
+  },
+  {
+    label: "PRODUCTIVITY",
+    color: "#06B6D4",
+    templates: [
+      "Create a step-by-step plan for:",
+      "What are the most important things I should know about:",
+      "Break this project into tasks:",
+      "Help me prioritize these tasks:",
+      "Write a weekly schedule for:",
+    ],
+  },
+];
+
+const CUSTOM_PRESETS_KEY = "openlee_custom_presets";
+
 type Model = { id: string; label: string; color: string; dot: string; vendor: string };
 type NodeInfo = { id: string; cpu: string; gpu: string; vram: number; load: number };
 
@@ -82,7 +154,10 @@ export default function OpenLee(): JSX.Element {
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [synthesis, setSynthesis] = useState<string>("");
   const [synthesizing, setSynthesizing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"oracle" | "buddy" | "log">("oracle");
+  const [activeTab, setActiveTab] = useState<"oracle" | "buddy" | "log" | "presets">("oracle");
+  const [customPresets, setCustomPresets] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem(CUSTOM_PRESETS_KEY) || "[]"); } catch { return []; }
+  });
   const [nodeLoads, setNodeLoads] = useState<number[]>(GPU_NODES.map(n => n.load));
   const [totalRuns, setTotalRuns] = useState(0);
   const [queryLog, setQueryLog] = useState<{ q: string; ts: string }[]>([]);
@@ -157,6 +232,25 @@ export default function OpenLee(): JSX.Element {
     setTotalRuns(n => n + 1);
     setTimeout(() => synthRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, [prompt, running, setModelResponse, setModelState]);
+
+  const savePreset = useCallback(() => {
+    const text = prompt.trim();
+    if (!text) return;
+    setCustomPresets(prev => {
+      if (prev.includes(text)) return prev;
+      const next = [text, ...prev].slice(0, 20);
+      localStorage.setItem(CUSTOM_PRESETS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, [prompt]);
+
+  const deleteCustomPreset = useCallback((text: string) => {
+    setCustomPresets(prev => {
+      const next = prev.filter(p => p !== text);
+      localStorage.setItem(CUSTOM_PRESETS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
 
   const doneCt = useMemo(() => Object.values(states).filter(s => s === "done").length, [states]);
   const progress = MODELS.length > 0 ? (doneCt / MODELS.length) * 100 : 0;
@@ -234,6 +328,7 @@ export default function OpenLee(): JSX.Element {
           { id: "oracle", label: "◈  ORACLE ENGINE" },
           { id: "buddy", label: "⬡  BUDDY SYSTEM" },
           { id: "log", label: "≡  QUERY LOG" },
+          { id: "presets", label: "⚡  PRESETS" },
         ].map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id as any)}
             className={activeTab === t.id ? "tab-active" : ""}
@@ -306,6 +401,22 @@ export default function OpenLee(): JSX.Element {
                       transition: "all 0.2s",
                     }}>
                     {running ? "PROCESSING..." : "▶ EXECUTE"}
+                  </button>
+                  <button onClick={savePreset} disabled={!prompt.trim()}
+                    title="Save current prompt as a custom preset"
+                    style={{
+                      background: "transparent",
+                      color: prompt.trim() ? "#FF6B35" : "#333",
+                      border: `1px solid ${prompt.trim() ? "#FF6B3566" : "#1a1a2e"}`,
+                      borderRadius: 2,
+                      padding: "6px 12px",
+                      cursor: prompt.trim() ? "pointer" : "not-allowed",
+                      fontSize: 10, fontWeight: 700, letterSpacing: 1,
+                      fontFamily: "inherit",
+                      transition: "all 0.2s",
+                      whiteSpace: "nowrap",
+                    }}>
+                    + SAVE PRESET
                   </button>
                   <div style={{ fontSize: 9, color: "#333", textAlign: "center" }}>CTRL+ENTER</div>
                 </div>
@@ -552,6 +663,128 @@ export default function OpenLee(): JSX.Element {
               ))}
             </div>
           </>
+        )}
+
+        {/* === PRESETS TAB === */}
+        {activeTab === "presets" && (
+          <div>
+            <div style={{ marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 16, letterSpacing: 3, color: "#FF6B35", fontWeight: 700 }}>
+                  ⚡ PROMPT TEMPLATES
+                </div>
+                <div style={{ fontSize: 9, color: "#555", letterSpacing: 2, marginTop: 2 }}>
+                  CLICK A PRESET TO LOAD IT INTO THE PROMPT — THEN HIT EXECUTE
+                </div>
+              </div>
+              <div style={{
+                padding: "6px 14px",
+                border: "1px solid #FF6B3566",
+                borderRadius: 2, fontSize: 10, color: "#FF6B35", letterSpacing: 2,
+              }}>
+                {PRESET_CATEGORIES.reduce((a, c) => a + c.templates.length, 0) + customPresets.length} TEMPLATES
+              </div>
+            </div>
+
+            {/* Custom Presets */}
+            {customPresets.length > 0 && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{
+                  fontSize: 9, letterSpacing: 3, color: "#FF6B35",
+                  marginBottom: 10, display: "flex", alignItems: "center", gap: 8,
+                }}>
+                  <span style={{
+                    width: 8, height: 8, borderRadius: "50%",
+                    background: "#FF6B35", display: "inline-block",
+                    boxShadow: "0 0 6px #FF6B35",
+                  }} />
+                  MY SAVED PRESETS
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {customPresets.map((text, i) => (
+                    <div key={i} style={{
+                      display: "flex", alignItems: "center",
+                      border: "1px solid #FF6B3566",
+                      borderRadius: 3, background: "#FF6B3511",
+                      overflow: "hidden",
+                    }}>
+                      <button
+                        onClick={() => { setPrompt(text); setActiveTab("oracle"); }}
+                        style={{
+                          background: "transparent", border: "none",
+                          color: "#FF6B35", padding: "7px 12px",
+                          cursor: "pointer", fontSize: 11, fontFamily: "inherit",
+                          textAlign: "left", maxWidth: 340, overflow: "hidden",
+                          textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>
+                        {text}
+                      </button>
+                      <button
+                        onClick={() => deleteCustomPreset(text)}
+                        title="Remove preset"
+                        style={{
+                          background: "transparent", border: "none", borderLeft: "1px solid #FF6B3533",
+                          color: "#555", padding: "7px 8px",
+                          cursor: "pointer", fontSize: 10, fontFamily: "inherit",
+                          transition: "color 0.2s",
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "#EF4444")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "#555")}>
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Built-in categories */}
+            {PRESET_CATEGORIES.map(cat => (
+              <div key={cat.label} style={{ marginBottom: 20 }}>
+                <div style={{
+                  fontSize: 9, letterSpacing: 3, color: cat.color,
+                  marginBottom: 10, display: "flex", alignItems: "center", gap: 8,
+                }}>
+                  <span style={{
+                    width: 8, height: 8, borderRadius: "50%",
+                    background: cat.color, display: "inline-block",
+                    boxShadow: `0 0 6px ${cat.color}`,
+                  }} />
+                  {cat.label}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {cat.templates.map((text, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setPrompt(text); setActiveTab("oracle"); }}
+                      style={{
+                        background: "#08080f",
+                        border: `1px solid ${cat.color}44`,
+                        borderRadius: 3,
+                        color: "#b0b0c0",
+                        padding: "7px 14px",
+                        cursor: "pointer",
+                        fontSize: 11, fontFamily: "inherit",
+                        transition: "all 0.15s",
+                        letterSpacing: 0.5,
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = `${cat.color}18`;
+                        e.currentTarget.style.color = cat.color;
+                        e.currentTarget.style.borderColor = cat.color;
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = "#08080f";
+                        e.currentTarget.style.color = "#b0b0c0";
+                        e.currentTarget.style.borderColor = `${cat.color}44`;
+                      }}>
+                      {text}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* === QUERY LOG TAB === */}
