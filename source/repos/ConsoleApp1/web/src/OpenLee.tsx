@@ -176,6 +176,29 @@ export default function OpenLee(): JSX.Element {
 
   const setModelResponse = useCallback((id: string, text: string) => setResponses(prev => ({ ...prev, [id]: text })), []);
 
+  const exportSession = useCallback(() => {
+    if (!prompt && Object.keys(responses).length === 0) return;
+    const ts = new Date().toLocaleString();
+    let md = `# OPEN-LEE Session Export\n_${ts}_\n\n`;
+    if (prompt) md += `## Query\n${prompt}\n\n`;
+    if (Object.keys(responses).length > 0) {
+      md += `## Node Responses\n\n`;
+      for (const [id, text] of Object.entries(responses)) {
+        if (text) md += `### ${id.toUpperCase()}\n${text}\n\n`;
+      }
+    }
+    if (synthesis) md += `## OPEN-LEE Synthesis\n${synthesis}\n\n`;
+    if (queryLog.length > 0) {
+      md += `## Query History\n`;
+      queryLog.forEach((q, i) => { md += `${i + 1}. [${q.ts}] ${q.q}\n`; });
+    }
+    const blob = new Blob([md], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `openlee-${Date.now()}.md`; a.click();
+    URL.revokeObjectURL(url);
+  }, [prompt, responses, synthesis, queryLog]);
+
   const runQuery = useCallback(async () => {
     if (!prompt.trim() || running) return;
     const q = prompt.trim();
@@ -304,6 +327,16 @@ export default function OpenLee(): JSX.Element {
               {GPU_NODES.filter((_,i) => nodeLoads[i] > 0).length}/{GPU_NODES.length}
             </div>
           </div>
+          <button onClick={exportSession} style={{
+            padding: "4px 12px",
+            border: "1px solid #555",
+            borderRadius: 2,
+            fontSize: 10,
+            color: "#888",
+            letterSpacing: 2,
+            background: "none",
+            cursor: "pointer",
+          }}>⬇ EXPORT</button>
           <div style={{
             padding: "4px 12px",
             border: "1px solid #10B981",
