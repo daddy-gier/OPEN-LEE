@@ -20,6 +20,18 @@ if (!ANTHROPIC_API_KEY) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+//  OpenClaw Muscle Config (loaded from .env, falls back to defaults)
+// ─────────────────────────────────────────────────────────────────
+
+const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL || "http://localhost:11434/v1").replace(/\/$/, "");
+
+const MUSCLES = {
+  charlie: { model: process.env.OPENCLAW_CHARLIE_MODEL || "qwen2.5-coder:14b", role: "coder"      },
+  scout:   { model: process.env.OPENCLAW_SCOUT_MODEL   || "qwen3:14b",          role: "researcher" },
+  speedy:  { model: process.env.OPENCLAW_SPEEDY_MODEL  || "mistral:7b",          role: "fast_tasks" },
+};
+
+// ─────────────────────────────────────────────────────────────────
 //  Shared Claude helper
 // ─────────────────────────────────────────────────────────────────
 
@@ -278,17 +290,143 @@ app.post("/api/game/npc-relationship", (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────
+//  OpenClaw — shared Ollama helper
+// ─────────────────────────────────────────────────────────────────
+
+async function callMuscle(muscleName, prompt, system = "", maxTokens = 800) {
+  const muscle = MUSCLES[muscleName];
+  if (!muscle) throw new Error(`Unknown muscle: ${muscleName}`);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);
+
+  try {
+    const messages = [];
+    if (system) messages.push({ role: "system", content: system });
+    messages.push({ role: "user", content: prompt });
+
+    const response = await fetch(`${OLLAMA_BASE_URL}/chat/completions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer ollama" },
+      body: JSON.stringify({ model: muscle.model, messages, max_tokens: maxTokens, stream: false }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(`Ollama error ${response.status}: ${txt.slice(0, 200)}`);
+    }
+
+    const data = await response.json();
+    const text = data?.choices?.[0]?.message?.content ?? null;
+    if (!text) throw new Error("Empty response from Ollama");
+    return text;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  OpenClaw: Status
+//  GET /api/openclaw/status
+// ─────────────────────────────────────────────────────────────────
+
+app.get("/api/openclaw/status", async (req, res) => {
+  const statuses = {};
+
+  await Promise.all(
+    Object.entries(MUSCLES).map(async ([name, cfg]) => {
+      try {
+        await callMuscle(name, "ping", "", 1);
+        statuses[name] = { model: cfg.model, role: cfg.role, status: "online" };
+      } catch {
+        statuses[name] = { model: cfg.model, role: cfg.role, status: "offline" };
+      }
+    })
+  );
+
+  res.json({
+    ollama_base_url: OLLAMA_BASE_URL,
+    brain: { model: "claude-sonnet-4-6", role: "orchestrator", status: ANTHROPIC_API_KEY ? "online" : "no-key" },
+    muscles: statuses,
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────
+//  OpenClaw: Brain (Claude orchestrator)
+//  POST /api/openclaw/brain
+//  Body: { prompt, system?, max_tokens? }
+// ─────────────────────────────────────────────────────────────────
+
+app.options("/api/openclaw/brain", (req, res) => { res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS"); res.sendStatus(204); });
+
+app.post("/api/openclaw/brain", async (req, res) => {
+  const { prompt, system, max_tokens } = req.body || {};
+  if (!prompt) return res.status(400).json({ error: "Missing prompt" });
+  try {
+    const text = await callClaude(
+      system || "You are the OpenClaw Brain — the orchestrator of a multi-model AI system for Nightshade Hollow game development. Coordinate tasks, review muscle output, and make final decisions.",
+      prompt,
+      max_tokens || 2000
+    );
+    return res.json({ muscle: "brain", model: "claude-sonnet-4-6", text });
+  } catch (err) {
+    if (err.name === "AbortError") return res.status(504).json({ error: "Brain timed out" });
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────
+//  OpenClaw: Muscle routes (CHARLIE, SCOUT, SPEEDY)
+//  POST /api/openclaw/:muscle
+//  Body: { prompt, system?, max_tokens? }
+// ─────────────────────────────────────────────────────────────────
+
+const DEFAULT_SYSTEMS = {
+  charlie: "You are CHARLIE, a C++ and UE5 code generation specialist for Nightshade Hollow (UE5.6 Prison RPG). Write clean, commented, production-ready Unreal Engine code.",
+  scout:   "You are SCOUT, an expert in game design research and narrative writing for Nightshade Hollow. Generate rich NPC dossiers, faction profiles, and lore.",
+  speedy:  "You are SPEEDY, a fast-response assistant for Nightshade Hollow. Give concise, direct answers. No fluff.",
+};
+
+Object.keys(MUSCLES).forEach(name => {
+  app.options(`/api/openclaw/${name}`, (req, res) => {
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.sendStatus(204);
+  });
+
+  app.post(`/api/openclaw/${name}`, async (req, res) => {
+    const { prompt, system, max_tokens } = req.body || {};
+    if (!prompt) return res.status(400).json({ error: "Missing prompt" });
+
+    try {
+      const text = await callMuscle(name, prompt, system || DEFAULT_SYSTEMS[name], max_tokens || 800);
+      return res.json({ muscle: name.toUpperCase(), model: MUSCLES[name].model, text });
+    } catch (err) {
+      if (err.name === "AbortError") return res.status(504).json({ error: `${name.toUpperCase()} timed out` });
+      console.error(`[OpenClaw/${name.toUpperCase()}]`, err.message);
+      return res.status(503).json({ error: `${name.toUpperCase()} offline: ${err.message}` });
+    }
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────
 //  Start
 // ─────────────────────────────────────────────────────────────────
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`OPEN-LEE listening on http://localhost:${port}`);
-  console.log(`  Core:  POST /api/claude`);
-  console.log(`  Game:  GET  /api/game/health`);
-  console.log(`  Game:  POST /api/game/npc-dialogue`);
-  console.log(`  Game:  POST /api/game/story-event`);
-  console.log(`  Game:  GET  /api/game/world-state`);
-  console.log(`  Game:  POST /api/game/world-state`);
-  console.log(`  Game:  POST /api/game/npc-relationship`);
+  console.log(`  Core:     POST /api/claude`);
+  console.log(`  Game:     GET  /api/game/health`);
+  console.log(`  Game:     POST /api/game/npc-dialogue`);
+  console.log(`  Game:     POST /api/game/story-event`);
+  console.log(`  Game:     GET  /api/game/world-state`);
+  console.log(`  Game:     POST /api/game/world-state`);
+  console.log(`  Game:     POST /api/game/npc-relationship`);
+  console.log(`  OpenClaw: GET  /api/openclaw/status`);
+  console.log(`  OpenClaw: POST /api/openclaw/brain    (Claude — orchestrator)`);
+  console.log(`  OpenClaw: POST /api/openclaw/charlie  (${MUSCLES.charlie.model} — coder)`);
+  console.log(`  OpenClaw: POST /api/openclaw/scout    (${MUSCLES.scout.model} — researcher)`);
+  console.log(`  OpenClaw: POST /api/openclaw/speedy   (${MUSCLES.speedy.model} — fast tasks)`);
+  console.log(`  Ollama:   ${OLLAMA_BASE_URL}`);
 });

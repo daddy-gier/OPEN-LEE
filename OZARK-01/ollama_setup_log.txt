@@ -1,0 +1,12 @@
+OZARK-01 / FRANKENSTINE — Ollama OpenClaw Setup Log
+=====================================================
+Node    : FRANKENSTINE (DESKTOP-EJ1NQF3)
+CPU     : Ryzen 5 7600X
+RAM     : 32 GB
+GPU     : Multi-GPU, 18 GB VRAM total
+OS      : Windows 11 Home 25H2
+Project : Z:\Gierl\Projects\CLAWED (UE5.6 C++ Prison RPG)
+
+Run ollama_setup.ps1 to populate this file automatically.
+Entries are appended chronologically.
+=====================================================

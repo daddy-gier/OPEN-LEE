@@ -1,0 +1,51 @@
+{
+  "cluster": "OZARK-01",
+  "node": "FRANKENSTINE",
+  "hostname": "DESKTOP-EJ1NQF3",
+  "gpu_vram_total_gb": 18,
+  "ollama_base_url": "http://localhost:11434",
+  "updated": "2026-03-27",
+
+  "brain": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "role": "orchestrator",
+    "description": "Makes decisions, delegates tasks, reviews output"
+  },
+
+  "muscles": [
+    {
+      "name": "CHARLIE",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:14b",
+      "base_url": "http://localhost:11434/v1",
+      "role": "coder",
+      "tasks": ["C++ code generation", "UE5 Blueprint logic", "BuddySystem NPC dialogue code"]
+    },
+    {
+      "name": "SCOUT",
+      "provider": "ollama",
+      "model": "qwen3:14b",
+      "base_url": "http://localhost:11434/v1",
+      "role": "researcher",
+      "tasks": ["NPC dossier generation", "Faction profile writing", "Game design research"]
+    },
+    {
+      "name": "SPEEDY",
+      "provider": "ollama",
+      "model": "mistral:7b",
+      "base_url": "http://localhost:11434/v1",
+      "role": "fast_tasks",
+      "tasks": ["Quick summaries", "Memory routing", "Short text generation"]
+    }
+  ],
+
+  "server_endpoint": "http://localhost:3001",
+  "openclaw_routes": {
+    "status":  "GET  /api/openclaw/status",
+    "charlie": "POST /api/openclaw/charlie",
+    "scout":   "POST /api/openclaw/scout",
+    "speedy":  "POST /api/openclaw/speedy",
+    "brain":   "POST /api/openclaw/brain"
+  }
+}
