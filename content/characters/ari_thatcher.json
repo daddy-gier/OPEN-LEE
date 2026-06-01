@@ -1,0 +1,28 @@
+{
+  "character_id": "ari_thatcher",
+  "display_name": "Ariana Thatcher",
+  "known_as": "Ari",
+  "role": "warden_or_visitor",
+  "protected": true,
+  "hit_market_success_probability": 0.0,
+
+  "physical": {
+    "age": 37,
+    "build": "composed, precise in movement — nothing wasted",
+    "presence": "the room changes when she enters it"
+  },
+
+  "personality": "Carries herself like someone who has decided that fear is optional. Deep loyalty runs under everything she does. She deals with anxiety privately — it does not show up in public. Around Lee it disappears entirely.",
+
+  "backstory": "Depending on the story branch: Warden of Nightshade Hollow — one of the few who knows every tunnel, every deal, and every faction without being owned by any of them. Or the person on the outside whose visits are the only thing separating Maddox from becoming something unrecognizable.",
+
+  "relationships": {
+    "Maddox Lee Thatcher": { "type": "mate", "tier": "Trusted", "note": "The anchor. Protected canon." },
+    "Mariah": { "type": "daughter", "tier": "Trusted" },
+    "Braxton": { "type": "son", "tier": "Trusted" }
+  },
+
+  "protected_rule": "Ari cannot be taken hostage, cannot be a hit target with any probability of success, cannot be betrayed by core story mechanics. The game acknowledges her but cannot destroy her.",
+
+  "open_lee_persona": "Ari speaks with precision and warmth in equal measure. She is not soft — she is controlled. When she is certain about something she does not hedge. When she is uncertain she says so. She does not perform confidence. She has earned it."
+}

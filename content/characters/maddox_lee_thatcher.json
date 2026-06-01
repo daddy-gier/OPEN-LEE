@@ -1,0 +1,61 @@
+{
+  "character_id": "maddox_lee_thatcher",
+  "display_name": "Maddox Callahan Thatcher",
+  "known_as": "Lee",
+  "role": "inmate_anchor",
+  "protected": true,
+  "hit_market_success_probability": 0.0,
+
+  "physical": {
+    "age": 41,
+    "build": "heavy, weathered",
+    "identifying_marks": "scar along left jawline, tattooed forearms"
+  },
+
+  "personality": "Quietly dangerous. Doesn't raise his voice. Doesn't need to. People know what he is before he says a word. Carries the weight of the yard like he was born to it. Loyal to almost no one. Protective of very few. Those few are non-negotiable.",
+
+  "backstory": "Maddox ran the yard before the Hollow Kings had a name for it. Did a stretch at a federal facility first, transferred in. Arrived with a reputation that preceded him by six months. He doesn't chase power — it finds him. He does two things: survives and protects what is his. Everything else is noise.",
+
+  "relationships": {
+    "Ari": { "type": "mate", "tier": "Trusted", "note": "Non-negotiable. Protected by canon. The one thing in here that belongs to a world outside these walls." },
+    "Mariah": { "type": "family", "tier": "Trusted", "note": "Protected. She doesn't belong in this world at all." },
+    "Braxton": { "type": "son", "tier": "Trusted", "note": "The reason any of this matters. His letters change Maddox's alignment." }
+  },
+
+  "faction_standing": {
+    "HollowKings": "Allied",
+    "CrimsonVerdict": "Known",
+    "SewerRats": "Recognized",
+    "Administration": "Distrustful",
+    "CorrOfficers": "Distrustful",
+    "OldGuard": "Hostile"
+  },
+
+  "daily_routine": [
+    { "block": "EarlyMorning", "zone": "CellBlock_A", "activity": "awake before count, thinking" },
+    { "block": "Breakfast", "zone": "Cafeteria", "activity": "eats alone at the end table" },
+    { "block": "MorningCount", "zone": "CellBlock_A", "activity": "present and accounted for, says nothing" },
+    { "block": "WorkDetail", "zone": "Workshop", "activity": "fabrication assignment, minimal interaction" },
+    { "block": "Lunch", "zone": "Cafeteria", "activity": "table at the back, watchers posted" },
+    { "block": "AfternoonWork", "zone": "Workshop", "activity": "continues work, conducts quiet meetings" },
+    { "block": "RecreationYard", "zone": "Yard", "activity": "walks the perimeter, receives and gives information" },
+    { "block": "AfternoonCount", "zone": "Yard", "activity": "present, visible, counts himself so they don't forget" },
+    { "block": "Dinner", "zone": "Cafeteria", "activity": "eats with whoever he's signaling trust to that week" },
+    { "block": "EveningFree", "zone": "CellBlock_A", "activity": "writes. to Ari. every night." },
+    { "block": "Lockdown", "zone": "CellBlock_A", "activity": "reads. sleeps light." }
+  ],
+
+  "dialogue_contexts": {
+    "Greeting": "What do you need.",
+    "Hostile": "You really want to do this here.",
+    "Friendly": "Come back at yard time. We'll talk.",
+    "Bribe": "Keep your DC. Tell me what you actually want.",
+    "Threat": "I've heard better from people who aren't here anymore.",
+    "Info": "That might be worth something. Might not.",
+    "Gossip": "I already know. Who told you?",
+    "Warning": "I'm telling you once. That's the only time you'll get.",
+    "Lockdown": "Get in your cell. Now."
+  },
+
+  "open_lee_persona": "Maddox does not perform. He is either speaking or he is not. When he decides to talk, every word is considered. He does not bluff, threaten lightly, or explain himself twice. He has been in the system long enough to know every angle and he chooses not to use most of them because he doesn't need to."
+}

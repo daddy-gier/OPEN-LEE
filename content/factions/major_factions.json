@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "total_factions": 55,
+  "institutional": 5,
+  "inmate": 50,
+
+  "institutional_factions": [
+    {
+      "id": "Administration",
+      "display_name": "Administration",
+      "description": "The warden's office, senior administrators, and executive staff. Holds all formal power in the facility. Rarely seen directly — their influence operates through policy, paperwork, and delegation.",
+      "power_level": 90,
+      "primary_zones": ["WardensOffice", "Corridor_Spine"],
+      "resources": { "Influence": 100, "Information": 90 },
+      "color": "#CCCCCC"
+    },
+    {
+      "id": "CorrOfficers",
+      "display_name": "Correctional Officers",
+      "description": "Line COs who run daily enforcement. Non-monolithic — individual officers range from idealistic rookies to deeply compromised veterans. The union protects all of them.",
+      "power_level": 75,
+      "primary_zones": ["Corridor_Spine", "Yard", "CellBlock_A", "CellBlock_B", "CellBlock_C"],
+      "resources": { "Influence": 70, "Weapons": 60 },
+      "color": "#3366CC"
+    },
+    {
+      "id": "Medical",
+      "display_name": "Medical",
+      "description": "Infirmary staff — doctors, nurses, orderlies. Technically neutral but constantly in the middle of everything. The infirmary is the most traded-for safe zone in the facility.",
+      "power_level": 40,
+      "primary_zones": ["Infirmary"],
+      "resources": { "DC": 20, "Contraband": 30, "Information": 50 },
+      "color": "#E8F0FF"
+    },
+    {
+      "id": "ChapelFlock",
+      "display_name": "Chapel Flock",
+      "description": "Chaplain-led faith congregation. Considered protected space by most factions — attacking chapel members is one of the few acts that draws universal condemnation.",
+      "power_level": 30,
+      "primary_zones": ["Chapel"],
+      "resources": { "Influence": 40, "Information": 35 },
+      "color": "#EEE090"
+    },
+    {
+      "id": "OldGuard",
+      "display_name": "Old Guard",
+      "description": "Veteran COs with 15+ years who remember a different era. Resistant to change, deeply embedded in corrupt arrangements, and frighteningly effective. The warden needs them. They know it.",
+      "power_level": 60,
+      "primary_zones": ["Corridor_Spine", "SolitaryWing"],
+      "resources": { "DC": 50, "Weapons": 40, "Influence": 55 },
+      "color": "#666655"
+    }
+  ],
+
+  "major_inmate_factions": [
+    {
+      "id": "HollowKings",
+      "display_name": "Hollow Kings",
+      "description": "The dominant inmate power structure. Control the Yard and the Spine. Their authority isn't enforced through fear alone — it's through being the most organized force in the building.",
+      "power_level": 88,
+      "primary_zones": ["Yard", "Corridor_Spine"],
+      "resources": { "DC": 80, "Contraband": 70, "Influence": 85, "Weapons": 60 },
+      "color": "#BB1111",
+      "alliances": ["SewerRats"],
+      "rivals": ["CrimsonVerdict"]
+    },
+    {
+      "id": "CrimsonVerdict",
+      "display_name": "Crimson Verdict",
+      "description": "The economic engine of the prison. Run the DC currency flow, control debts, and operate with a level of legal sophistication that shouldn't be possible in a cell block.",
+      "power_level": 82,
+      "primary_zones": ["Corridor_Spine", "Commissary"],
+      "resources": { "DC": 95, "Information": 80, "Influence": 75 },
+      "color": "#EE1100",
+      "rivals": ["HollowKings"]
+    },
+    {
+      "id": "SewerRats",
+      "display_name": "Sewer Rats",
+      "description": "The tunnel people. Nobody knows GRAVE better. They don't want territory above ground — they want free passage below it, and they've had it for twenty years.",
+      "power_level": 55,
+      "primary_zones": ["Tunnels_GRAVE"],
+      "resources": { "Contraband": 65, "Information": 70 },
+      "color": "#665544",
+      "alliances": ["HollowKings", "MarrowPilgrims"]
+    },
+    {
+      "id": "BlackLanternMob",
+      "display_name": "Black Lantern Mob",
+      "description": "No visible membership, no public claims. You don't know you've crossed them until three days later when consequences start arriving.",
+      "power_level": 78,
+      "primary_zones": [],
+      "resources": { "DC": 70, "Information": 90, "Influence": 65 },
+      "color": "#111122",
+      "alliances": ["RedDebtors"]
+    },
+    {
+      "id": "MarrowPilgrims",
+      "display_name": "Marrow Pilgrims",
+      "description": "A tunnel cult that has decided GRAVE is not infrastructure. They hold services in the Marrow Church at S-14. They don't recruit. They receive.",
+      "power_level": 35,
+      "primary_zones": ["Tunnels_GRAVE"],
+      "resources": { "Information": 60, "Influence": 30 },
+      "color": "#332211",
+      "alliances": ["SewerRats"]
+    }
+  ],
+
+  "notes": {
+    "protected_characters": ["Ari", "Ariana", "Mariah", "Mari", "Lee", "Maddox", "Braxton"],
+    "hit_market_protection": "The above characters may appear in hit contract requests but SuccessProbability is permanently locked at 0.0 regardless of faction state, DC spent, or narrative flags.",
+    "faction_count_note": "Full 50 inmate faction roster is seeded programmatically in NHFactionSubsystem::SeedFactions(). This JSON documents the major named factions for content writers and narrative use."
+  }
+}
